@@ -26,7 +26,7 @@ There are several demonstration files available in this template.
 
   Shows how to do asynchronous programming when handling a request.
 
-- CountController.java:
+- Controller.java:
 
   Shows how to inject a component into a controller and use the component when
   handling requests.

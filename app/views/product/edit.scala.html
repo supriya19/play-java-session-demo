@@ -1,0 +1,57 @@
+@(message: String, productForm: Form[model.Product])
+
+@import helper._
+@main(message) {
+
+<div class="container-fluid">
+    <!-- Breadcrumbs-->
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item">
+            <a href="#">Dashboard</a>
+        </li>
+        <li class="breadcrumb-item active">Edit Product</li>
+    </ol>
+    <!-- Example DataTables Card-->
+    <div class="row">
+        <div class="col-md-6">
+            <div class="box box-primary">
+                <div class="box-header with-border">
+                    <h3 class="box-title">Edit Product</h3>
+                </div><!-- /.box-header -->
+                <!-- form start -->
+                @helper.form(action = routes.ProductController.edit(), 'enctype -> "multipart/form-data", 'name -> "editForm"){
+
+                    @helper.inputText(productForm("id"), 'class -> "hide_text", '_id -> "edit_id")
+                    <div class="box-body">
+                        <!-- left column -->
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                @helper.inputText(productForm("title"), '_class -> "edit_text", '_name -> "Title", '_id -> "title")
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                @helper.inputText(productForm("description"), '_class -> "edit_text", '_name -> "Description", '_id -> "description")
+                            </div><!-- /.form-group -->
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                @helper.inputText(productForm("price"), '_class -> "edit_text", '_name -> "Price", '_id -> "price")
+                            </div><!-- /.form-group -->
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                @helper.inputText(productForm("image"), '_class -> "edit_text", '_name -> "Image", '_id -> "image")
+                            </div><!-- /.form-group -->
+                        </div>
+                    </div><!-- /.box-body -->
+
+                    <div class="box-footer">
+                        <button type="submit" class="btn btn-primary">Submit</button>
+                    </div>
+            </div><!-- /.box -->
+            }
+        </div>
+    </div>
+</div>
+}

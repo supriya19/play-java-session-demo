@@ -4,10 +4,24 @@
 
 # An example controller showing a sample home page
 GET     /                           controllers.HomeController.index
+GET     /check/status               controllers.ResultsController.okResult
 # An example controller showing how to use dependency injection
 GET     /count                      controllers.CountController.count
 # An example controller showing how to write asynchronous code
 GET     /message                    controllers.AsyncController.message
+
+GET     /products                   controllers.ProductController.products
+POST    /create                     controllers.ProductController.create
+GET     /create                     controllers.ProductController.createFormView
+GET     /edit/:productId            controllers.ProductController.editFormView(productId: String)
+POST    /edit                       controllers.ProductController.edit
+
+#Result Example
+GET     /product/list               controllers.ProductController.productAll
+GET     /product/:productId         controllers.ProductController.findProductByID(productId: String)
+
+#Result Example
+GET     /temporary                  controllers.ResultsController.temporaryRedirect
 
 # Map static resources from the /public folder to the /assets URL path
 GET     /assets/*file               controllers.Assets.versioned(path="/public", file: Asset)
