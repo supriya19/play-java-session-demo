@@ -19,7 +19,7 @@ public class CassandraReader implements SessionReader {
     }
 
     @Override
-    public ResultSetFuture getDataFromDatabaseAsync(BoundStatement query) {
+    public ResultSetFuture getDataListFromStatement(BoundStatement query) {
         return session.executeAsync(query);
     }
 }

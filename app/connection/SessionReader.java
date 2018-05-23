@@ -10,5 +10,5 @@ import java.io.Serializable;
 @Named
 public interface SessionReader extends Serializable {
     ResultSet getDataFromDatabase(BoundStatement query);
-    ResultSetFuture getDataFromDatabaseAsync(BoundStatement query);
+    ResultSetFuture getDataListFromStatement(BoundStatement query);
 }
