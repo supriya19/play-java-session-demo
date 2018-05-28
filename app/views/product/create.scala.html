@@ -17,6 +17,20 @@
                     <h3 class="box-title">Create New Product</h3>
                 </div><!-- /.box-header -->
                 <!-- form start -->
+
+                @if(productForm.hasErrors) {
+                <div class="alert alert-error">
+                    <a class="close" data-dismiss="alert">x</a>
+                    @if(productForm.errors.size() > 0) {
+                    @for((key, value) <- productForm.errors) {
+                    @key.toString() : @for(err <- value) {
+                            @err.message().toString()
+                        }
+                    }
+                    }
+                </div>
+                }
+
                 <form id="productForm" action="@routes.ProductController.create()" method="post" role="form">
                     <div class="box-body">
 
@@ -30,7 +44,7 @@
                         <div class="col-md-6">
                             <div class="form-group">
                                 <label>Description</label>
-                                <input type="text" class="form-control" id="description" name="description" placeholder="Enter Description">
+                                <input type="text" class="form-control" id="description" name="description" placeholder="Enter Description" required>
                             </div><!-- /.form-group -->
                         </div>
                         <div class="col-md-6">

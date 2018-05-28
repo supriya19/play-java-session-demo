@@ -20,6 +20,8 @@ POST    /edit                       controllers.ProductController.edit
 GET     /product/list               controllers.ProductController.productAll
 GET     /product/:productId         controllers.ProductController.findProductByID(productId: String)
 
+POST    /async/index                controllers.ValidationController.index
+
 #Result Example
 GET     /temporary                  controllers.ResultsController.temporaryRedirect
 

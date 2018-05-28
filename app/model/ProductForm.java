@@ -1,11 +1,20 @@
 package model;
 
-public class ProductForm {
+import play.data.validation.Constraints;
 
+public class ProductForm  implements Constraints.Validatable<String> {
+
+    @Constraints.Required(message = "Invalid title")
     private String title;
     private String description;
+    @Constraints.Required(message = "Invalid price")
     private Double price;
     private String image;
+
+    @Override
+    public String validate() {
+        return null;
+    }
 
     public ProductForm() {
     }

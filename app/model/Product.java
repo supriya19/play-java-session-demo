@@ -1,13 +1,12 @@
 package model;
 
-import play.data.validation.Constraints;
-
 import java.util.UUID;
 
 public class Product {
 
+
     private UUID id;
-    private String title;
+    protected String title;
     private String description;
     private Double price;
     private String image;

@@ -9,7 +9,8 @@ scalaVersion := "2.12.4"
 libraryDependencies ++= Seq(
   guice,
   "com.datastax.cassandra" % "cassandra-driver-core" % "3.1.0",
-  "com.google.guava" % "guava" % "18.0" force()
+  "com.google.guava" % "guava" % "18.0" force(),
+  javaWs
 )
 
 // Testing libraries for dealing with CompletionStage...

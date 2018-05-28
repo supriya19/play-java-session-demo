@@ -6,11 +6,18 @@ import model.Product;
 import model.ProductForm;
 import play.data.Form;
 import play.data.FormFactory;
+import play.filters.csrf.AddCSRFToken;
+import play.filters.csrf.RequireCSRFCheck;
 import play.libs.Json;
 import play.libs.concurrent.HttpExecutionContext;
+import play.libs.ws.WSClient;
+import play.libs.ws.WSResponse;
+import play.mvc.BodyParser;
 import play.mvc.Controller;
 import play.mvc.Result;
+import play.mvc.With;
 import services.ProductService;
+import validator.Validator;
 import views.html.product.edit;
 
 import java.util.concurrent.CompletableFuture;
@@ -24,6 +31,8 @@ public class ProductController extends Controller {
     private FormFactory formFactory;
     @Inject
     HttpExecutionContext executionContext;
+    @Inject
+    WSClient wsClient;
 
     public CompletionStage<Result> products() {
         return productService.getProducts().handleAsync((result, error) -> {
@@ -57,12 +66,24 @@ public class ProductController extends Controller {
     }
 
     /**
+     * Example of Custom Action Composition
+     *
+     * @return
+     */
+    @Validator(ProductForm.class)
+    public CompletionStage<Result> createByJson() {
+        final ProductForm productForm = Json.fromJson(request().body().asJson(), ProductForm.class);
+        return productService.create(productForm).handleAsync((result, error) -> {
+            return redirect(routes.ProductController.products());
+        }).exceptionally(throwable -> internalServerError(throwable.getMessage()));
+    }
+
+    /**
      * @param productId
      * @return
      */
     public CompletionStage<Result> editFormView(String productId) {
         return productService.getProductById(productId).handleAsync((result, error) -> {
-            System.out.println("result:::::" + result);
             if (result.isPresent()) {
                 Form<Product> productForm = formFactory.form(Product.class).fill(result.get());
                 return ok(edit.render("Edit Product", productForm));
@@ -119,5 +140,63 @@ public class ProductController extends Controller {
      */
     public Result productAll() {
         return ok(Json.toJson(Test.getProducts()));
+    }
+
+    /**
+     * WS Example with xml response
+     *
+     * @return
+     */
+    public CompletionStage<Result> webServiceAsXmlResponse() {
+        final CompletionStage<org.w3c.dom.Document> wsDocument = wsClient.url("https://github.com/supriya19")
+                .get().thenApply(wsResponse -> {
+                    return wsResponse.asXml();
+                });
+
+        return wsDocument.thenApply(response -> {
+            return ok(response.getTextContent());
+        }).exceptionally(throwable -> {
+            return internalServerError();
+        });
+    }
+
+    /**
+     * WS example with json response
+     * @return
+     */
+    public CompletionStage<Result> webServiceAsJsonResponse() {
+        return wsClient.url("https://github.com/supriya19").get().thenApply(wsResponse -> {
+            if (wsResponse.getStatus() == 200) {
+                return ok(wsResponse.asJson());
+            } else {
+                return internalServerError();
+            }
+        });
+    }
+
+    /**
+     * Combine WS API calls
+     * @return
+     */
+    public CompletionStage<Result> testCombine() {
+        final CompletionStage<WSResponse> githubCompletionStage = wsClient.url("https://github.com/supriya19").get();
+        final CompletionStage<WSResponse> googleCompletionStage = wsClient.url("https://www.google.com/").get();
+
+        return githubCompletionStage.thenCombine(googleCompletionStage, (githubRespone, googleResponse) -> {
+            return ok(githubRespone.getBody() + googleResponse.getBody());
+        });
+    }
+
+    /**
+     * Combine with exceptionally block
+     * @return
+     */
+    public CompletionStage<Result> testCombineWithRecover() {
+        final CompletionStage<WSResponse> githubCompletionStage = wsClient.url("https://github.com/supriya19").get();
+        final CompletionStage<WSResponse> googleCompletionStage = wsClient.url("https://www.google.com/").get();
+
+        return githubCompletionStage.thenCombine(googleCompletionStage, (githubRespone, googleResponse) -> {
+            return ok(githubRespone.asJson() + googleResponse.getBody());
+        }).exceptionally(throwable -> badRequest(throwable.getMessage()));
     }
 }
