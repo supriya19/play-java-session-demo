@@ -6,16 +6,12 @@ import model.Product;
 import model.ProductForm;
 import play.data.Form;
 import play.data.FormFactory;
-import play.filters.csrf.AddCSRFToken;
-import play.filters.csrf.RequireCSRFCheck;
 import play.libs.Json;
 import play.libs.concurrent.HttpExecutionContext;
 import play.libs.ws.WSClient;
 import play.libs.ws.WSResponse;
-import play.mvc.BodyParser;
 import play.mvc.Controller;
 import play.mvc.Result;
-import play.mvc.With;
 import services.ProductService;
 import validator.Validator;
 import views.html.product.edit;
@@ -25,14 +21,19 @@ import java.util.concurrent.CompletionStage;
 
 public class ProductController extends Controller {
 
-    @Inject
     private ProductService productService;
-    @Inject
     private FormFactory formFactory;
+    private HttpExecutionContext executionContext;
+    private WSClient wsClient;
+
     @Inject
-    HttpExecutionContext executionContext;
-    @Inject
-    WSClient wsClient;
+    public ProductController(ProductService productService, FormFactory formFactory,
+                             HttpExecutionContext executionContext, WSClient wsClient) {
+        this.productService = productService;
+        this.formFactory = formFactory;
+        this.executionContext = executionContext;
+        this.wsClient = wsClient;
+    }
 
     public CompletionStage<Result> products() {
         return productService.getProducts().handleAsync((result, error) -> {
@@ -162,6 +163,7 @@ public class ProductController extends Controller {
 
     /**
      * WS example with json response
+     *
      * @return
      */
     public CompletionStage<Result> webServiceAsJsonResponse() {
@@ -176,6 +178,7 @@ public class ProductController extends Controller {
 
     /**
      * Combine WS API calls
+     *
      * @return
      */
     public CompletionStage<Result> testCombine() {
@@ -189,6 +192,7 @@ public class ProductController extends Controller {
 
     /**
      * Combine with exceptionally block
+     *
      * @return
      */
     public CompletionStage<Result> testCombineWithRecover() {

@@ -16,10 +16,11 @@ GET     /create                     controllers.ProductController.createFormView
 GET     /edit/:productId            controllers.ProductController.editFormView(productId: String)
 POST    /edit                       controllers.ProductController.edit
 
-#Result Example
+#Product All
 GET     /product/list               controllers.ProductController.productAll
 GET     /product/:productId         controllers.ProductController.findProductByID(productId: String)
 
+#Body Parser Example
 POST    /async/index                controllers.ValidationController.index
 
 #Result Example
